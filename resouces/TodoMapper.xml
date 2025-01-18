@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.TodoMapper">
+
+	<!-- Todoの1対1の関係 -->
+	<resultMap id="TodoResult"
+		type="com.example.demo.entity.Todo">
+		<id property="id" column="id" />
+		<result property="title" column="title" />
+		<result property="importance" column="importance" />
+		<result property="urgency" column="urgency" />
+		<result property="deadline" column="deadline" />
+		<result property="done" column="done" />
+	</resultMap>
+
+
+	<!-- 【SELECT】特定のIDを持つ書籍を取得するためのSQLを定義 -->
+	<select id="getTodoById" resultMap="TodoResult">
+		SELECT T.ID,
+		T.TITLE,
+		T.IMPORTANCE,
+		T.URGENCY,
+		T.DEADLINE,
+		T.DONE
+		FROM TODO T
+		WHERE T.ID = #{id}
+	</select>
+
+	<!-- 【SELECT】全てのToDoを取得するためのSQLを定義 -->
+	<select id="getAllTodoSorted" resultMap="TodoResult">
+		SELECT T.ID,
+		T.TITLE,
+		T.IMPORTANCE,
+		T.URGENCY,
+		T.DEADLINE,
+		T.DONE
+		FROM TODO T
+		ORDER BY T.DONE,
+		<choose>
+			<when test="sortColumn == 'id'">T.ID</when>
+			<when test="sortColumn == 'title'">T.TITLE</when>
+			<when test="sortColumn == 'importance'">T.IMPORTANCE</when>
+			<when test="sortColumn == 'urgency'">T.URGENCY</when>
+			<when test="sortColumn == 'deadline'">T.DEADLINE</when>
+		</choose>
+		<choose>
+			<when test="sortOrder == 'asc'">ASC</when>
+			<when test="sortOrder == 'desc'">DESC</when>
+		</choose>
+	</select>
+
+	<!-- 【INSERT】新しいTodoをデータベースに追加するSQLを定義 -->
+	<insert id="insertTodo"
+		parameterType="com.example.demo.entity.Todo">
+		INSERT INTO TODO (TITLE, IMPORTANCE, URGENCY, DEADLINE,
+		DONE)
+		VALUES (#{title}, #{importance}, #{urgency}, #{deadline},
+		#{done})
+	</insert>
+
+
+	<!-- 【UPDATE】特定のIDを持つTodoの情報を更新するSQLを定義 -->
+	<update id="updateTodo"
+		parameterType="com.example.demo.entity.Todo">
+		UPDATE TODO T
+		SET TITLE = #{title},
+		T.IMPORTANCE = #{importance},
+		T.URGENCY = #{urgency},
+		T.DEADLINE = #{deadline},
+		T.DONE = #{done}
+		WHERE T.ID = #{id}
+	</update>
+
+	<!-- 【DELETE】特定のIDを持つ書籍の情報を削除するSQLを定義 -->
+	<delete id="deleteTodo" parameterType="int">
+		DELETE FROM TODO
+		WHERE ID = #{id}
+	</delete>
+</mapper>

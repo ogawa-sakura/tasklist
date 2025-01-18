@@ -1,0 +1,217 @@
+@charset "UTF-8";
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+
+table {
+    width: 60%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    margin-left: 0;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: rgb(164, 164, 255);
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr.completed {
+    background-color: rgb(164, 164, 255);
+}
+
+tr.completed td {
+    color: #6c757d;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.form-container {
+    width: 30%;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-container h2 {
+    margin-top: 0;
+}
+
+.form-container .form-group {
+    margin-bottom: 15px;
+}
+
+.form-container .form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-container .form-group input,
+.form-container .form-group select {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.form-container .form-group .radio-group,
+.form-container .form-group .checkbox-group {
+    display: flex;
+    align-items: center;
+}
+
+.form-container .form-group .radio-group input,
+.form-container .form-group .checkbox-group input {
+    width: auto;
+    margin-right: 10px;
+}
+
+.form-container .form-group .error {
+    color: red;
+    font-size: 0.9em;
+}
+
+
+
+
+.completed .edit-btn {
+    color: #6c757d;
+    background-color: #e2e3e5;
+    border-color: #d6d8db;
+}
+
+.completed .edit-btn:hover {
+    background-color: #d6d8db;
+}
+
+/* モーダルウィンドウのスタイル */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 5px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+/* モーダルを開いた状態でページを開く */
+.modal.show {
+    display: block;
+}
+
+/* モーダルウィンドウ内のテーブルを画面いっぱいに表示 */
+.modal-content .form-container {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+}
+
+.modal-content .form-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.modal-content .form-container th, .modal-content .form-container td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.modal-content .form-container th {
+    background-color: rgb(164, 164, 255);
+}
+
+.modal-content .form-container tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.modal-content .form-container tr.completed {
+    background-color: rgb(164, 164, 255);
+}
+
+.modal-content .form-container tr.completed td {
+    color: #6c757d;
+}
+
+.modal-content .form-container tr:hover {
+    background-color: #f1f1f1;
+}
+
+.modal-content .form-container .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-content .form-container .btn:hover {
+    background-color: #0056b3;
+}

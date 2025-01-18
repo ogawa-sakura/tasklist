@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>タスク管理アプリ</title>
+	<link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+	<form>
+		<input type="button" value="タスク追加" class="btn" id="openModalBtn">
+		※件名・重要度などをクリックすると昇順降順を切り替えられます
+	</form>
+	<table>
+		<thead>
+			<tr>
+				<th><a th:href="@{${sortUrlId}}">id <span
+							th:text="${sortColumn == 'id' ? (sortOrder == 'asc' ? '▲' : '▼') : ''}"></span></a></th>
+				<th><a th:href="@{${sortUrlTitle}}">件名 <span
+							th:text="${sortColumn == 'title' ? (sortOrder == 'asc' ? '▲' : '▼') : ''}"></span></a></th>
+				<th><a th:href="@{${sortUrlImportance}}">重要度 <span
+							th:text="${sortColumn == 'importance' ? (sortOrder == 'asc' ? '▲' : '▼') : ''}"></span></a>
+				</th>
+				<th><a th:href="@{${sortUrlUrgency}}">緊急度 <span
+							th:text="${sortColumn == 'urgency' ? (sortOrder == 'asc' ? '▲' : '▼') : ''}"></span></a>
+				</th>
+				<th><a th:href="@{${sortUrlDeadline}}">期限 <span
+							th:text="${sortColumn == 'deadline' ? (sortOrder == 'asc' ? '▲' : '▼') : ''}"></span></a>
+				</th>
+				<th>タスク完了</th>
+				<th>タスク編集</th>
+				<th>タスク削除</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="todo : ${todos}" th:classappend="${todo.done == 'Y'} ? 'completed'">
+				<td th:text="${todo.id}">ID</td>
+				<td th:text="${todo.title}">件名</td>
+				<td th:text="${todo.importance == 1 ? '★★★' : '★'}">重要度</td>
+				<td th:text="${todo.urgency == 1 ? '★★★' : '★'}">緊急度</td>
+				<td th:text="${#dates.format(todo.deadline, 'yyyy-MM-dd')}">期限</td>
+				<td>
+					<span th:if="${todo.done == 'Y'}">完了</span>
+					<a th:if="${todo.done != 'Y'}" th:href="@{/done/{id}(id=${todo.id})}" class="btn edit-btn">完了</a>
+				</td>
+				<td><a th:href="@{/update/{id}(id=${todo.id})}" class="btn edit-btn" data-id="${todo.id}">編集</a></td>
+				<td><a th:href="@{/delete/{id}(id=${todo.id})}" class="btn edit-btn">削除</a></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<!-- モーダル (追加/編集共通) -->
+	<div id="taskModal" class="modal" th:classappend="${update || validationError} ? 'show' : ''">
+		<div class="modal-content">
+			<span class="close" id="closeModal">&times;</span>
+			<div class="form-container">
+				<h2 th:text="${update} ? '更新フォーム' : '登録フォーム'"></h2>
+				<form th:action="@{${update} ? '/update' : '/add'}" method="post" th:object="${todo}">
+					<div th:if="${update}" class="form-group">
+						<label>ID</label>
+						<input type="text" th:field="*{id}" readonly>
+					</div>
+					<div class="form-group">
+						<label>件名</label>
+						<input type="text" th:field="*{title}">
+						<div th:if="${#fields.hasErrors('title')}" th:text="${#fields.errors('title')}" class="error">
+						</div>
+					</div>
+					<div class="radio-group">
+						<label>
+							<div>重要度</div>
+						</label>
+						<input type="radio" th:field="*{importance}" value="1">高
+						<input type="radio" th:field="*{importance}" value="0">低
+						<div th:if="${#fields.hasErrors('importance')}" th:text="${#fields.errors('importance')}"
+							class="error"></div>
+					</div>
+					<div class="form-group">
+						<label>緊急度</label>
+						<select th:field="*{urgency}">
+							<option value="2" selected>選択してください</option>
+							<option value="1">高</option>
+							<option value="0">低</option>
+						</select>
+						<div th:if="${#fields.hasErrors('urgency')}" th:text="${#fields.errors('urgency')}"
+							class="error"></div>
+					</div>
+					<div class="form-group">
+						<label>期限</label>
+						<input type="date" th:field="*{deadline}">
+						<div th:if="${#fields.hasErrors('deadline')}" th:text="${#fields.errors('deadline')}"
+							class="error"></div>
+					</div>
+					<div class="form-group">
+						<label>チェック</label>
+						<div class="checkbox-group">
+							<input type="checkbox" th:field="*{done}" value="Y">完了
+						</div>
+					</div>
+					<input type="submit" th:value="${update ? '更新' : '登録'}" class="btn">
+					<a th:href="@{/}" class="btn">戻る</a>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// モーダル要素
+		const modal = document.getElementById("taskModal");
+		const openModalBtn = document.getElementById("openModalBtn");
+		const closeModal = document.getElementById("closeModal");
+
+		// モーダルを閉じる処理（共通化）
+		const closeTaskModal = () => {
+			modal.style.display = "none";
+			// URLをリダイレクト
+			if (window.location.pathname.startsWith("/update")) {
+				window.location.href = "/";
+			}
+		};
+
+
+		// ☓ボタンを押したときの処理
+		closeModal.onclick = () => {
+			closeTaskModal();
+		};
+
+		// モーダルを開く
+		openModalBtn.onclick = () => {
+			modal.style.display = "block";
+		};
+
+		// 編集モーダルの表示処理
+		document.querySelectorAll(".edit-btn").forEach(button => {
+			button.addEventListener("click", function () {
+				const todoId = this.getAttribute("data-id");
+				fetch(`/update/${todoId}`)
+					.then(response => response.json())
+					.then(data => {
+						// モーダルにデータをセット
+						document.querySelector("[name='id']").value = data.id;
+						document.querySelector("[name='title']").value = data.title || "";
+						document.querySelector(`[name='importance'][value='${data.importance}']`).checked = true;
+						document.querySelector("[name='urgency']").value = data.urgency || "";
+						document.querySelector("[name='deadline']").value = data.deadline || "";
+						document.querySelector("[name='done']").checked = data.done === "Y";
+
+						// 編集モーダルを表示
+						modal.style.display = "block";
+
+						// URLを「/update/{id}」に変更
+						history.pushState({}, "", `/update/${todoId}`);
+					})
+					.catch(error => console.error("Error loading todo data:", error));
+			});
+		});
+
+		// ページロード時、バリデーションエラーによるモーダル表示チェック
+		window.onload = () => {
+			if (modal.classList.contains("show")) {
+				modal.style.display = "block";
+			}
+		};
+
+		// モーダル外をクリックした場合も閉じる処理を適用
+		window.onclick = (event) => {
+			if (event.target === modal) {
+				closeTaskModal();
+			}
+		};
+	</script>
+
+</body>
+
+</html>
