@@ -15,18 +15,18 @@
 	<table>
 		<thead>
 			<tr>
-				<th><a th:href="@{${sortUrlId}}">id <span
-							th:text="${sortColumn == 'id' ? (sortOrder == 'asc' ? '▲' : '▼') : ''}"></span></a></th>
-				<th><a th:href="@{${sortUrlTitle}}">件名 <span
-							th:text="${sortColumn == 'title' ? (sortOrder == 'asc' ? '▲' : '▼') : ''}"></span></a></th>
-				<th><a th:href="@{${sortUrlImportance}}">重要度 <span
-							th:text="${sortColumn == 'importance' ? (sortOrder == 'asc' ? '▲' : '▼') : ''}"></span></a>
+				<th><a th:href="@{${sort.id}}">id <span
+							th:text="${sort.column == 'id' ? (sort.order == 'asc' ? '▲' : '▼') : ''}"></span></a></th>
+				<th><a th:href="@{${sort.title}}">件名 <span
+							th:text="${sort.column == 'title' ? (sort.order == 'asc' ? '▲' : '▼') : ''}"></span></a></th>
+				<th><a th:href="@{${sort.importance}}">重要度 <span
+							th:text="${sort.column == 'importance' ? (sort.order == 'asc' ? '▲' : '▼') : ''}"></span></a>
 				</th>
-				<th><a th:href="@{${sortUrlUrgency}}">緊急度 <span
-							th:text="${sortColumn == 'urgency' ? (sortOrder == 'asc' ? '▲' : '▼') : ''}"></span></a>
+				<th><a th:href="@{${sort.urgency}}">緊急度 <span
+							th:text="${sort.column == 'urgency' ? (sort.order == 'asc' ? '▲' : '▼') : ''}"></span></a>
 				</th>
-				<th><a th:href="@{${sortUrlDeadline}}">期限 <span
-							th:text="${sortColumn == 'deadline' ? (sortOrder == 'asc' ? '▲' : '▼') : ''}"></span></a>
+				<th><a th:href="@{${sort.deadline}}">期限 <span
+							th:text="${sort.column == 'deadline' ? (sort.order == 'asc' ? '▲' : '▼') : ''}"></span></a>
 				</th>
 				<th>タスク完了</th>
 				<th>タスク編集</th>

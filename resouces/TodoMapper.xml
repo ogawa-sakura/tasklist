@@ -16,45 +16,45 @@
 
 	<!-- 【SELECT】特定のIDを持つ書籍を取得するためのSQLを定義 -->
 	<select id="getTodoById" resultMap="TodoResult">
-		SELECT T.ID,
-		T.TITLE,
-		T.IMPORTANCE,
-		T.URGENCY,
-		T.DEADLINE,
-		T.DONE
-		FROM TODO T
-		WHERE T.ID = #{id}
+		select t.id,
+		t.title,
+		t.importance,
+		t.urgency,
+		t.deadline,
+		t.done
+		from todo t
+		where t.id = #{id}
 	</select>
 
 	<!-- 【SELECT】全てのToDoを取得するためのSQLを定義 -->
 	<select id="getAllTodoSorted" resultMap="TodoResult">
-		SELECT T.ID,
-		T.TITLE,
-		T.IMPORTANCE,
-		T.URGENCY,
-		T.DEADLINE,
-		T.DONE
-		FROM TODO T
-		ORDER BY T.DONE,
+		select t.id,
+		t.title,
+		t.importance,
+		t.urgency,
+		t.deadline,
+		t.done
+		from todo t
+		order by t.done,
 		<choose>
-			<when test="sortColumn == 'id'">T.ID</when>
-			<when test="sortColumn == 'title'">T.TITLE</when>
-			<when test="sortColumn == 'importance'">T.IMPORTANCE</when>
-			<when test="sortColumn == 'urgency'">T.URGENCY</when>
-			<when test="sortColumn == 'deadline'">T.DEADLINE</when>
+			<when test="column == 'id'">t.id</when>
+			<when test="column == 'title'">t.title</when>
+			<when test="column == 'importance'">t.importance</when>
+			<when test="column == 'urgency'">t.urgency</when>
+			<when test="column == 'deadline'">t.deadline</when>
 		</choose>
 		<choose>
-			<when test="sortOrder == 'asc'">ASC</when>
-			<when test="sortOrder == 'desc'">DESC</when>
+			<when test="order == 'asc'">asc</when>
+			<when test="order == 'desc'">desc</when>
 		</choose>
 	</select>
 
 	<!-- 【INSERT】新しいTodoをデータベースに追加するSQLを定義 -->
 	<insert id="insertTodo"
 		parameterType="com.example.demo.entity.Todo">
-		INSERT INTO TODO (TITLE, IMPORTANCE, URGENCY, DEADLINE,
-		DONE)
-		VALUES (#{title}, #{importance}, #{urgency}, #{deadline},
+		insert into todo (title, importance, urgency, deadline,
+		done)
+		values (#{title}, #{importance}, #{urgency}, #{deadline},
 		#{done})
 	</insert>
 
@@ -62,18 +62,18 @@
 	<!-- 【UPDATE】特定のIDを持つTodoの情報を更新するSQLを定義 -->
 	<update id="updateTodo"
 		parameterType="com.example.demo.entity.Todo">
-		UPDATE TODO T
-		SET TITLE = #{title},
-		T.IMPORTANCE = #{importance},
-		T.URGENCY = #{urgency},
-		T.DEADLINE = #{deadline},
-		T.DONE = #{done}
-		WHERE T.ID = #{id}
+		update todo t
+		set title = #{title},
+		t.importance = #{importance},
+		t.urgency = #{urgency},
+		t.deadline = #{deadline},
+		t.done = #{done}
+		where t.id = #{id}
 	</update>
 
 	<!-- 【DELETE】特定のIDを持つ書籍の情報を削除するSQLを定義 -->
 	<delete id="deleteTodo" parameterType="int">
-		DELETE FROM TODO
-		WHERE ID = #{id}
+		delete from todo
+		where id = #{id}
 	</delete>
 </mapper>

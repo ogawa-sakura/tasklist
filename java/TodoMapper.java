@@ -20,5 +20,5 @@ public interface TodoMapper {
 	/* タスク削除 */
 	void deleteTodo(int id);
 	// ソートされたTodoリストを取得するメソッド
-	List<Todo> getAllTodoSorted(@Param("sortColumn") String sortColumn, @Param("sortOrder") String sortOrder);
+	List<Todo> getAllTodoSorted(@Param("column") String column, @Param("order") String order);
 }

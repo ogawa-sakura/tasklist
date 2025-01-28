@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.demo.entity.SortUrl;
 import com.example.demo.entity.Todo;
 import com.example.demo.mapper.TodoMapper;
 
@@ -23,35 +24,45 @@ public class TodoController {
 
 	private final TodoMapper todoMapper;
 
+
 	@GetMapping("/")
-	public String getAllTodo(@RequestParam(value = "sortColumn", defaultValue = "deadline") String sortColumn,
-			@RequestParam(value = "sortOrder", defaultValue = "asc") String sortOrder, Model model) {
+	public String getAllTodo(@RequestParam(value = "column", defaultValue = "deadline") String column,
+			@RequestParam(value = "order", defaultValue = "asc") String order, Model model) {
 
-		List<Todo> todos = todoMapper.getAllTodoSorted(sortColumn, sortOrder);
-
+		// sort用Urlを生成して渡す
+		SortUrl sort = new SortUrl();
+		sort.setId(sortUrl(column, order));
+		sort.setTitle(sortUrl(column, order));
+		sort.setImportance(sortUrl(column, order));
+		sort.setUrgency(sortUrl(column, order));
+		sort.setDeadline(sortUrl(column, order));
+		sort.setColumn(column);
+		sort.setOrder(order);
+		model.addAttribute("sort", sort);
+		
+		List<Todo> todos = todoMapper.getAllTodoSorted(column, order);
+		
+		// 初期表示用の設定
 		model.addAttribute("todo", new Todo());
 		model.addAttribute("todos", todos);
-		model.addAttribute("sortColumn", sortColumn);
-		model.addAttribute("sortOrder", sortOrder);
-
 		model.addAttribute("update", false);
 		model.addAttribute("validationError", false);
-		// sortUrlメソッドでURLを生成して渡す
-		model.addAttribute("sortUrlId", sortUrl("id", sortOrder));
-		model.addAttribute("sortUrlTitle", sortUrl("title", sortOrder));
-		model.addAttribute("sortUrlImportance", sortUrl("importance", sortOrder));
-		model.addAttribute("sortUrlUrgency", sortUrl("urgency", sortOrder));
-		model.addAttribute("sortUrlDeadline", sortUrl("deadline", sortOrder));
 
 		return "index";
 	}
-
+	
+	/**
+	 * ソート用URL生成メソッド
+	 * @param column	ソート対象カラム
+	 * @param order		昇順・降順
+	 * @return			ソートURL
+	 */
 	public String sortUrl(String column, String order) {
 		if (column.equals(order)) {
-			return "/?sortColumn=" + column + "&sortOrder=" + (order.equals("asc") ? "desc" : "asc");
+			return "/?sort.column=" + column + "&sort.order=" + (order.equals("asc") ? "desc" : "asc");
 		}
 		String nextOrder = "asc".equals(order) ? "desc" : "asc";
-		return "/?sortColumn=" + column + "&sortOrder=" + nextOrder;
+		return "/?sort.column=" + column + "&sort.order=" + nextOrder;
 	}
 
 	@GetMapping("/add")
@@ -81,8 +92,8 @@ public class TodoController {
 		model.addAttribute("todo", todo);
 		List<Todo> todos = todoMapper.getAllTodoSorted("deadline", "asc");
 		model.addAttribute("todos", todos);
-		model.addAttribute("sortColumn", "deadline");
-		model.addAttribute("sortOrder", "asc");
+		model.addAttribute("sort.column", "deadline");
+		model.addAttribute("sort.order", "asc");
 		model.addAttribute("update", true); // 編集モーダルを表示するためのフラグ
 		return "index"; // indexページに遷移
 	}
@@ -95,8 +106,8 @@ public class TodoController {
 			List<Todo> todos = todoMapper.getAllTodoSorted("deadline", "asc");
 			model.addAttribute("todo", todo);
 			model.addAttribute("todos", todos);
-			model.addAttribute("sortColumn", "deadline");
-			model.addAttribute("sortOrder", "asc");
+			model.addAttribute("sort.column", "deadline");
+			model.addAttribute("sort.order", "asc");
 			model.addAttribute("update", true); // 編集モーダル用のフラグ
 			model.addAttribute("validationError", true); // バリデーションエラーフラグ
 			return "index"; // indexページに遷移
@@ -116,8 +127,8 @@ public class TodoController {
 			List<Todo> todos = todoMapper.getAllTodoSorted("deadline", "asc");
 			model.addAttribute("todo", todo);
 			model.addAttribute("todos", todos);
-			model.addAttribute("sortColumn", "deadline");
-			model.addAttribute("sortOrder", "asc");
+			model.addAttribute("sort.column", "deadline");
+			model.addAttribute("sort.order", "asc");
 			model.addAttribute("validationError", true); // エラーフラグ
 			return "index"; // モーダル内でエラー表示を行う
 		}
